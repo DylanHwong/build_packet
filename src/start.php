@@ -35,7 +35,7 @@ $process->start(function (&$run_worker_list, &$shut_worker_list, $debug) use($bu
     //分发任务逻辑
     $length = count($task_list);
     if( 0 < $length ) {
-        $worker_num = round($length / 5); //理想状态一个worker跑5个任务
+        $worker_num = ceil($length / 5); //理想状态一个worker跑5个任务
         $max_worker_num = $worker_num > 20 ? 20 : $worker_num; //最多20个worker
         $single_worker_task_num = ceil($length/$max_worker_num); //计算每个worker的任务数
         $run_worker_list = array_chunk($task_list, $single_worker_task_num); //分配每个woker任务
