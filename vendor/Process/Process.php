@@ -368,7 +368,7 @@ class Process
                 exit(0);
             // 未知命令
             default :
-                exit("\033[32;40mUsage: php {$start_file} {start|stop|reload|status}\033[0m\n");
+                exit("\033[32;40mUsage: php {$start_file} {start|stop|reload|status|debug}\033[0m\n");
         }
     }
 

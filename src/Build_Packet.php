@@ -13,14 +13,14 @@ class Build_Packet
     public function __construct()
     {
         //register file logger
-        $this->file_logger = new Logger('BuidPacket RunLog');
+        $this->file_logger = new Logger('BuidPacket logger');
         $this->file_logger->pushHandler(new StreamHandler(RUN_LOG . 'build_packet_running.log'));
 
 
         //register mailer logger
         global $g_c;
         self::setMailer($g_c['mail']['build_packet']);
-        $this->mail_logger = new Logger('BuidPacket RunLog');
+        $this->mail_logger = new Logger('BuidPacket logger');
         $this->mail_logger->pushHandler(new SwiftMailerHandler(self::$mailer, self::$message));
     }
 
