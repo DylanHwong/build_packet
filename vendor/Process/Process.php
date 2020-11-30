@@ -81,7 +81,9 @@ class Process
     {
         $this->registerShutdownError();
         $this->command();
-        $this->daemonize();
+        if( !$this->debug ) {
+            $this->daemonize();
+        }
         $this->checkPcntl();
         $this->installSignal();
         $this->master_pid = posix_getpid();
