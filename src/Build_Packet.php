@@ -97,7 +97,7 @@ class Build_Packet
                 //如果是目录则递归子目录，继续操作
                 if(is_dir($path.$val)){
                     //子目录中操作删除文件夹和文件
-                    if(false == clean_dir($path.$val.'/')){
+                    if(false == $this->clean_dir($path.$val.'/')){
                         return false;
                     };
                     //目录清空后删除空文件夹
@@ -124,7 +124,7 @@ class Build_Packet
     public function decompress_base_pkg($base_pkg_file){
         $base_pkg_path = BASE_PKG_DIR.$base_pkg_file;
         if(!file_exists($base_pkg_path)){
-            return message_return('SRC_PACK_ERR');
+            $this->message_return('SRC_PACK_ERR');
         }
 
         /*
@@ -134,28 +134,28 @@ class Build_Packet
             4、删除母包复制copy体
         */
         if(false == clean_dir(WORK_DIR)){
-            return message_return('DECOMPRESS_ERR');
+            $this->message_return('DECOMPRESS_ERR');
         }
 
         if(false == mkdir(DECOMPRESS_DIR,0755)){
-            return message_return('DECOMPRESS_ERR');
+            $this->message_return('DECOMPRESS_ERR');
         }
 
         $work_pkg_file = WORK_DIR.$base_pkg_file;
         if(!copy($base_pkg_path,$work_pkg_file)){
-            return message_return('COPY_BASE_APK_FAIL');
+            $this->message_return('COPY_BASE_APK_FAIL');
         }
         $status = '';
         $strcmd = "/home/lee/jdk1.8.0_191/bin/java -jar ".SOURCE_DIR."/apktool.jar d --only-main-classes {$work_pkg_file} -o ".DECOMPRESS_DIR." -f ";
         $log = system($strcmd,$status);
         if($status != 0){
-            return message_return('DECOMPRESS_ERR');
+            $this->message_return('DECOMPRESS_ERR');
         }
 
         if(false == unlink($work_pkg_file)){
-            return message_return('DECOMPRESS_ERR');
+            $this->message_return('DECOMPRESS_ERR');
         }
-        return message_return('PACK_SUCCESS');
+        $this->message_return('PACK_SUCCESS');
     }
 
 
@@ -191,22 +191,22 @@ class Build_Packet
             //1、判断是否需要修改包名
             $pkg_manifest_path = WORK_DIR.'AndroidManifest.xml';
             if(false == file_exists($pkg_manifest_path)){
-                return message_return('REPLACE_CONFIG_ERR');
+                $this->message_return('REPLACE_CONFIG_ERR');
             }
-            change_pkg_build_id($pkg_manifest_path, $task['pkg_build_id']);
+            $this->change_pkg_build_id($pkg_manifest_path, $task['pkg_build_id']);
         }
 
-        $pkg_config_path = get_pkg_config_path();
+        $pkg_config_path = $this->get_pkg_config_path();
         unlink($pkg_config_path);
         if(!copy(SOURCE_DIR.'ReplaceConfig.smali',$pkg_config_path)){
-            return message_return('REPLACE_CONFIG_ERR');
+            $this->message_return('REPLACE_CONFIG_ERR');
         }
         $config_contents = file_get_contents($pkg_config_path);
         $config_contents = str_replace('14444', $task['channel_id'], $config_contents);
         if(false == file_put_contents($pkg_config_path, $config_contents)){
-            return message_return('REPLACE_CONFIG_ERR');
+            $this->message_return('REPLACE_CONFIG_ERR');
         }
-        return message_return('PACK_SUCCESS');
+        $this->message_return('PACK_SUCCESS');
     }
 
 
@@ -215,9 +215,9 @@ class Build_Packet
         $status = '';
         $log = system($strcmd,$status);
         if($status != 0){
-            return message_return('COMPRESS_ERR');
+            $this->message_return('COMPRESS_ERR');
         }
-        return message_return('PACK_SUCCESS');
+        $this->message_return('PACK_SUCCESS');
     }
 
 
@@ -226,9 +226,9 @@ class Build_Packet
         $status = '';
         $log = system($strcmd,$status);
         if($status != 0){
-            return message_return('DECOMPRCOMPRESS_ERRESS_ERR');
+            $this->message_return('DECOMPRCOMPRESS_ERRESS_ERR');
         }
-        return message_return('PACK_SUCCESS');
+        $this->message_return('PACK_SUCCESS');
     }
 
     /*
@@ -256,26 +256,26 @@ class Build_Packet
         */
 
         //解包
-        $status = decompress_base_pkg($task['base_pkg_file']);
+        $status = $this->decompress_base_pkg($task['base_pkg_file']);
         if($status['code'] != 0){
             return $status;
         }
         //替换配置
-        $status = replace_pkg_config($task);
+        $status = $this->replace_pkg_config($task);
         if($status['code'] != 0){
             return $status;
         }
         //压缩包
-        $status = compress_child_pkg($task);
+        $status = $this->compress_child_pkg($task);
         if($status['code'] != 0){
             return $status;
         }
         //签名
-        $status = jarsigner_pkg($task);
+        $status = $this->jarsigner_pkg($task);
         if($status['code'] != 0){
             return $status;
         }
-        return  message_return('PACK_SUCCESS');
+        $this->message_return('PACK_SUCCESS');
     }
 }
 
