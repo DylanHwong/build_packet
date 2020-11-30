@@ -1,0 +1,11 @@
+{
+    "require": {
+	  "monolog/monolog": "1.2.*",
+        "swiftmailer/swiftmailer": "^5.4.12"
+    },
+    "autoload": {
+    "psr-4": {
+      "Process\\": "vendor/Process/"
+    }
+  }
+}
