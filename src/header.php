@@ -10,7 +10,7 @@ require_once VENDOR_DIR . 'autoload.php';
 /**
  * 全局配置
  */
-//require_once CONFIG_DIR . 'general_config.php';
+require_once CONFIG_DIR . 'general_config.php';
 /*
  * 邮件发送依赖包
  */

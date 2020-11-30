@@ -133,6 +133,7 @@ class Process
         if ($pid) {
             $this->pid_children[$pid] = $worker_id;
         } else {
+            $this->registerShutdownError();
             call_user_func_array($worker_closure, [
                 $worker_params
             ]);

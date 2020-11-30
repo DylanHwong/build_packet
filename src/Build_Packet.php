@@ -13,14 +13,14 @@ class Build_Packet
     public function __construct()
     {
         //register file logger
-        $this->file_logger = new Logger('BuildPacket logger');
-        $this->file_logger->pushHandler(new StreamHandler(RUN_LOG . 'build_packet_.log'));
+        $this->file_logger = new Logger('BuidPacket RunLog');
+        $this->file_logger->pushHandler(new StreamHandler(RUN_LOG . 'build_packet_running.log'));
 
 
         //register mailer logger
         global $g_c;
         self::setMailer($g_c['mail']['build_packet']);
-        $this->mail_logger = new Logger('BuidPacket logger');
+        $this->mail_logger = new Logger('BuidPacket RunLog');
         $this->mail_logger->pushHandler(new SwiftMailerHandler(self::$mailer, self::$message));
     }
 
@@ -133,7 +133,7 @@ class Build_Packet
             3、解压母包
             4、删除母包复制copy体
         */
-        if(false == clean_dir(WORK_DIR)){
+        if(false == $this->clean_dir(WORK_DIR)){
             $this->message_return('DECOMPRESS_ERR');
         }
 
